@@ -1,0 +1,36 @@
+@startuml
+class Users {
+  user_id (PK) : INT
+  username : VARCHAR(255)
+  email (UNIQUE) : VARCHAR(255)
+  password_hash : VARCHAR(255)
+  created_at : TIMESTAMP
+}
+
+class Locations {
+  location_id (PK) : INT
+  city_name : VARCHAR(255)
+  country_code (UNIQUE) : CHAR(2)
+  latitude : DECIMAL(10, 8)
+  longitude : DECIMAL(11, 8)
+}
+
+class User_Favorites {
+  favorite_id (PK) : INT
+  user_id (FK) : INT  { Users.user_id }
+  location_id (FK) : INT  { Locations.location_id }
+  created_at : TIMESTAMP
+}
+
+class Weather_Records {
+  record_id (PK) : INT
+  location_id (FK) : INT  { Locations.location_id }
+  temperature : DECIMAL(5, 2)
+  weather_description : VARCHAR(255)
+  recorded_at : TIMESTAMP
+}
+
+Users -right-> User_Favorites: 1
+User_Favorites -right-> Weather_Records: N
+Locations -up-> User_Favorites: N
+@enduml
