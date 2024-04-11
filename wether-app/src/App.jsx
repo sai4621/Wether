@@ -54,18 +54,18 @@ function App() {
           </div>
         )}
         {forecast && (
-          <div className="forecast">
-            <h2>5-Day Forecast</h2>
-            {forecast.DailyForecasts.map((day, index) => (
-              <div key={index} className="forecast-day">
-                <p>Date: {new Date(day.Date).toLocaleDateString()}</p>
-                <p>Min: {day.Temperature.Minimum.Value}°C, Max: {day.Temperature.Maximum.Value}°C</p>
-                <p>Day: {day.Day.IconPhrase}, Night: {day.Night.IconPhrase}</p>
-                <p>Attire for the day: {recommendAttire((day.Temperature.Maximum.Value + day.Temperature.Minimum.Value) / 2)}</p>
-              </div>
-            ))}
-          </div>
-        )}
+        <div className="forecast">
+          <h2>5-Day Forecast</h2>
+          {forecast.DailyForecasts.map((day, index) => (
+            <div key={index} className="forecast-day">
+              <p>Date: {new Date(day.Date).toLocaleDateString()}</p>
+              <p>Min: {day.Temperature.Minimum.Value}°C, Max: {day.Temperature.Maximum.Value}°C</p>
+              <p>Day: {day.Day.IconPhrase}, Night: {day.Night.IconPhrase}</p>
+              <p>Attire for the day: {recommendAttire((day.Temperature.Maximum.Value + day.Temperature.Minimum.Value) / 2)}</p>
+            </div>
+          ))}
+        </div>
+      )}
       </div>
     </div>
   );
