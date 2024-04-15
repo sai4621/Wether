@@ -1,4 +1,29 @@
 import React, { useState } from "react";
+import axios from 'axios';
+
+const LoginPage = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:5000/login', { username, password });
+      console.log(response.data.message);
+      alert('Login successful!');
+    } catch (error) {
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.log(error.response.data.message);
+        alert('Failed to login: ' + error.response.data.message);
+      } else {
+        console.log('Error', error.message);
+        alert('Failed to login.');
+      }
+    }
+  };
+
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
