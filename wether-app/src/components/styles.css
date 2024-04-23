@@ -108,6 +108,7 @@
 /*-------------------END OF NEW-NAV-------------------*/
 
 /*-------------------START OF WEATHER-APP-------------------*/
+/* Root container styles */
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -115,19 +116,23 @@
   text-align: center;
 }
 
+/* Logo styles */
 .logo {
   height: 6em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+/* Logo spin animation */
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -137,38 +142,42 @@
   }
 }
 
+/* Reduced motion preference for users */
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
   }
 }
 
+/* Card styles */
 .card {
   padding: 2em;
 }
 
+/* Docs link color */
 .read-the-docs {
-  color: #888;
+  color: #555; /* Darker color for better readability */
 }
 
+/* Main weather app container styles */
 .weather-app-container {
-  background-color: #e0f2f1;
+  background-color: #e0f2f1; /* Soft teal background */
   min-height: 100vh;
   padding: 20px;
   box-sizing: border-box;
-  /*add padding to the top and bottom of the container */
-  
-
 }
 
+/* Weather information section styles */
 .weather-info {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+/* Styles for current weather and forecast containers */
 .current-weather, .forecast {
   background-color: #ffffff;
+  color: #333; /* Dark text for better readability */
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -178,21 +187,25 @@
   text-align: center;
 }
 
+/* Styles for individual forecast day entries */
 .forecast-day {
   border: 1px solid #ddd;
   padding: 10px;
   margin: 10px 0;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  background-color: #fafafa; /* Light grey background for odd items */
 }
 
-/* Additional styling for improved readability and aesthetics */
-.forecast-day:nth-child(odd) {
-  background-color: #f0f0f0;
-}
-
+/* Additional styles for improved readability */
 .forecast-day p {
   margin: 5px 0;
+  color: #333; /* Ensuring text is easily readable */
+}
+
+/* For odd forecast days, a slightly different background for stripe effect */
+.forecast-day:nth-child(odd) {
+  background-color: #f0f0f0;
 }
 
 .location-selector {
