@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import "./styles.css";
+import Navbar from "./components/navbar.jsx";
+import './App.css'; // Ensure your CSS is properly linked
+import './styles.css';
 
 function Home() {
   const [currentWeather, setCurrentWeather] = useState(null);
@@ -58,6 +60,7 @@ function Home() {
 
   return (
     <div className="weather-app-container">
+      <Navbar />
       <div className="location-selector">
         <label htmlFor="city">Enter City Name</label>
         <input type="text" id="city" value={cityName} onChange={handleCityNameChange} />
