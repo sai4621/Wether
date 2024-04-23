@@ -1,5 +1,5 @@
 /*-------------------START OF NAV-------------------*/ 
-.nav {
+ .nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -68,6 +68,176 @@
     .nav .hamburger {
       display: block;
     }
-  }
+  } 
   /*-------------------END OF NAV-------------------*/
+
+  /*-------------------START OF NEW-NAV-------------------*/
+  /* styles.css */
+
+  /* .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    padding: 1rem 2rem; 
+  }
+  
+  .logo {
+
+  }
+  
+  .blue-gradient_text {
+    
+  }
+  
+  .nav {
+    display: flex;
+    font-size: 1.125rem; 
+  }
+  
+  .nav-link {
+    color: black;
+    text-decoration: none;
+    gap: 10rem; 
+
+  }
+  
+  .nav-link.active {
+    color: #3b82f6; 
+  }  */
+  
+/*-------------------END OF NEW-NAV-------------------*/
+
+/*-------------------START OF WEATHER-APP-------------------*/
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+.weather-app-container {
+  background-color: #e0f2f1;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+  /*add padding to the top and bottom of the container */
+  
+
+}
+
+.weather-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.current-weather, .forecast {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+  width: 80%;
+  max-width: 600px;
+  text-align: center;
+}
+
+.forecast-day {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Additional styling for improved readability and aesthetics */
+.forecast-day:nth-child(odd) {
+  background-color: #f0f0f0;
+}
+
+.forecast-day p {
+  margin: 5px 0;
+}
+
+.location-selector {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  max-width: 600px;
+  text-align: center;
+  margin: 0 auto; /* Center align horizontally */
+  margin-top: 30px; /* Optional: Add some space above location selector */
+}
+
+.location-selector label {
+  margin-right: 10px; /* Optional: Add some space between label and input */
+}
+
+.location-selector input[type="text"] {
+  padding: 8px; /* Optional: Adjust input padding */
+  border: 1px solid #ccc; /* Optional: Add a border */
+  border-radius: 4px; /* Optional: Add border radius */
+}
+
+.location-info {
+  margin-top: 20px; /* Optional: Add some space between location info and other content */
+}
+
+.location-info h2 {
+  margin-bottom: 10px; /* Optional: Add some space below heading */
+}
+
+.location-info p {
+  margin: 5px 0; /* Optional: Adjust paragraph margin */
+}
+
+#city {
+  text-align: center; /* Center align the text inside the input */
+
+}
+
+label[for="city"] {
+  text-align: center; /* Center-align the text inside the label */
+}
+
+
+/*-------------------END OF WEATHER-APP-------------------*/
   
