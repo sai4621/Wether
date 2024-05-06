@@ -1,55 +1,59 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';  // Import useNavigate
+import { useAuth } from './AuthContext';  // Make sure this path is correct relative to LoginPage
+
 
 const LoginPage = () => {
-  const [isSigningUp, setIsSigningUp] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
-
-  const handleSignIn = async (event) => {
-    event.preventDefault();
-    setError("");
-    try {
-      const response = await axios.post("/login", { username, password });
-      console.log(response.data.message);
-      alert("Login successful!");
-    } catch (error) {
-      setError("Failed to login: " + error?.response?.data?.message || error.message);
-    }
-  };
-
-  const handleSignUp = async (event) => {
-    event.preventDefault();
-    setError("");
-  
-    // Validate password and confirmPassword
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-  
-    try {
-      const response = await axios.post("/signup", { username, password });
-      console.log(response.data.message);
-      alert("Signup successful!");
-      setIsSigningUp(false); // Switch to sign-in view
-    } catch (error) {
-      // More robust error handling
-      if (error.response) {
-        // The server responded with a status code that falls out of the range of 2xx
-        setError("Failed to sign up: " + (error.response.data.message || error.response.data.error || "Unknown error"));
-      } else if (error.request) {
-        // The request was made but no response was received
-        setError("Failed to sign up: No response from server.");
-      } else {
-        // Something happened in setting up the request that triggered an error
-        setError("Failed to sign up: " + error.message);
+    const [isSigningUp, setIsSigningUp] = useState(false);
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [error, setError] = useState("");
+    const { login } = useAuth();
+    const navigate = useNavigate();
+    
+    const handleSignIn = async (event) => {
+      event.preventDefault();
+      console.log("Attempting to log in with", username, password); // Debugging
+      setError("");
+      try {
+          const response = await axios.post('http://localhost:5000/login', { username, password });
+          console.log("Login response:", response); // Debugging
+          if (response.data.status === 'success') {
+              login(username);  // This should update the context
+              navigate('/');    // Redirect to home or another page
+          } else {
+              throw new Error(response.data.message);
+          }
+      } catch (error) {
+          console.error("Login error:", error); // Debugging
+          setError("Failed to login: " + (error.response?.data?.message || error.message));
       }
-    }
-  };
-  
+    };
+
+
+    
+
+    const handleSignUp = async (event) => {
+        event.preventDefault();
+        setError("");
+        if (password !== confirmPassword) {
+            setError("Passwords do not match.");
+            return;
+        }
+        try {
+            const response = await axios.post('http://localhost:5000/signup', { username, password });
+            if (response.data.status === 'success') {
+                alert('Signup successful!');
+                navigate('/');  // Redirect to home page on successful signup
+            } else {
+                throw new Error(response.data.message);
+            }
+        } catch (error) {
+            setError("Failed to sign up: " + (error.response?.data?.message || error.message));
+        }
+    };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh" }}>

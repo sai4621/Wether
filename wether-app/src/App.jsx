@@ -1,23 +1,29 @@
 import React from 'react';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from "./components/navbar.jsx";
 import Login from "./components/LoginPage.jsx";
 import Home from "./components/home.jsx";
+import Preferences from "./components/Preferences.jsx";
+import { AuthProvider } from './components/AuthContext'; // Ensure this path is correct
 
 const About = () => {
   return <h1>About Page</h1>;
 };
 
+// App component should only setup the Router and AuthProvider
 const App = () => {
   return (
-    <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/login" element={<Login />} />
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/preferences" element={<Preferences />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 };
 
