@@ -74,129 +74,126 @@ const Home = () => {
         };
         const weatherImages = {
             "Sunny": "../images/w/sunny.png",
-            "Partly Cloudy": "partly_cloudy.png",
-            "Clear": "clear.png",
+            "Partly Cloudy": "../images/w/partly_cloudy.png",
+            "Clear": "../images/w/clear.png",
             // Add more images for other weather conditions as needed
         };
         const attireImages = {
-            "Sunny": "light_clothing.png",
-            "Partly Cloudy": "light_jacket.png",
-            "Clear": "casual.png",
+            "Sunny": "../images/a/light_clothing.png",
+            "Partly Cloudy": "../images/a/light_jacket.png",
+            "Clear": "../images/a/casual.png",
             // Add more images for other weather conditions as needed
         };
+
+        const weatherTexts = {
+            1: "Sunny",
+            2: "Partly Cloudy",
+            3: "Clear"
+            // Add more weather codes and texts as necessary
+        };
+
+        const requests = cities.map(city => {
+            const cityInfo = cityData[city];
+
+            if (!cityInfo) {
+                console.log(`No location found for city: ${city}`);
+                return Promise.resolve({ city, data: undefined });
+            }
+
+            const locationId = cityInfo.Key;
+            const mockWeatherData = hardcodedWeatherData[locationId];
+
+            if (mockWeatherData) {
+                return Promise.resolve({
+                    city,
+                    data: {
+                        Temperature: mockWeatherData.Temperature,
+                        WeatherText: weatherTexts[mockWeatherData.WeatherCode],
+                        WeatherImage: weatherImages[weatherTexts[mockWeatherData.WeatherCode]],
+                        AttireImage: attireImages[weatherTexts[mockWeatherData.WeatherCode]]
+                    }
+                });
+            } else {
+                console.error(`Mock weather data not found for ${city}`);
+                return Promise.resolve({ city, data: undefined });
+            }
+        });
+
+        Promise.all(requests).then(results => {
+            const newWeatherData = results.reduce((acc, result) => {
+                acc[result.city] = result.data;
+                return acc;
+            }, {});
+            setWeatherData(newWeatherData);
+            console.log('Updated weather data:', newWeatherData);
+        });
     };
 
-    const weatherTexts = {
-        1: "Sunny",
-        2: "Partly Cloudy",
-        3: "Clear"
-        // Add more weather codes and texts as necessary
-    };
-
-    const requests = cities.map(city => {
-        const cityInfo = cityData[city];
-
-        if (!cityInfo) {
-            console.log(`No location found for city: ${city}`);
-            return Promise.resolve({ city, data: undefined });
-        }
-
-        const locationId = cityInfo.Key;
-        const mockWeatherData = hardcodedWeatherData[locationId];
-
-        if (mockWeatherData) {
-            return Promise.resolve({
-                city,
-                data: {
-                    Temperature: mockWeatherData.Temperature,
-                    WeatherText: weatherTexts[mockWeatherData.WeatherCode],
-                    WeatherImage: weatherImages[weatherTexts[mockWeatherData.WeatherCode]],
-                    AttireImage: attireImages[weatherTexts[mockWeatherData.WeatherCode]]
-                }
-            });
+    const addCity = () => {
+        if (newCity.trim()) {
+            axios.post('http://localhost:5000/cities', { user_id: user.id, city_name: newCity })
+                .then(() => {
+                    setCities([...cities, newCity]);
+                    fetchWeatherData([...cities, newCity]);
+                    setNewCity('');
+                })
+                .catch(error => {
+                    console.error('Error adding city', error);
+                    alert('Failed to add city. Please check your network or contact the administrator.');
+                });
         } else {
-            console.error(`Mock weather data not found for ${city}`);
-            return Promise.resolve({ city, data: undefined });
+            alert('Please enter a city name.');
         }
-    });
+    };
 
-    Promise.all(requests).then(results => {
-        const newWeatherData = results.reduce((acc, result) => {
-            acc[result.city] = result.data;
-            return acc;
-        }, {});
-        setWeatherData(newWeatherData);
-        console.log('Updated weather data:', newWeatherData);
-    });
-};
-
-
-
-const addCity = () => {
-    if (newCity.trim()) {
-        axios.post('http://localhost:5000/cities', { user_id: user.id, city_name: newCity })
+    const removeCity = (cityToRemove) => {
+        const encodedCityName = encodeURIComponent(cityToRemove);
+        axios.delete(`http://localhost:5000/cities/${encodedCityName}`)
             .then(() => {
-                setCities([...cities, newCity]);
-                fetchWeatherData([...cities, newCity]);
-                setNewCity('');
+                const updatedCities = cities.filter(city => city !== cityToRemove);
+                setCities(updatedCities);
+                fetchWeatherData(updatedCities);
             })
             .catch(error => {
-                console.error('Error adding city', error);
-                alert('Failed to add city. Please check your network or contact the administrator.');
+                console.error('Error removing city', error);
+                alert('Failed to remove city. Please check your network or contact the administrator.');
             });
-    } else {
-        alert('Please enter a city name.');
+    };
+
+    if (!user) {
+        return <div>Please log in to view this page.</div>;
     }
-};
 
-const removeCity = (cityToRemove) => {
-    const encodedCityName = encodeURIComponent(cityToRemove);
-    axios.delete(`http://localhost:5000/cities/${encodedCityName}`)
-        .then(() => {
-            const updatedCities = cities.filter(city => city !== cityToRemove);
-            setCities(updatedCities);
-            fetchWeatherData(updatedCities);
-        })
-        .catch(error => {
-            console.error('Error removing city', error);
-            alert('Failed to remove city. Please check your network or contact the administrator.');
-        });
-};
-
-if (!user) {
-    return <div>Please log in to view this page.</div>;
-}
-
-return (
-    <div className="weather-app-container">
-        <h1>Weather Dashboard</h1>
-        <input
-            type="text"
-            value={newCity}
-            onChange={e => setNewCity(e.target.value)}
-            placeholder="Add New City"
-        />
-        <button onClick={addCity}>Add City</button>
-        {cities.map((city, index) => (
-            <div key={index}>
-                <h2>{city}</h2>
-                {weatherData[city] ? (
-                    <div>
-                        <p>Temperature: {weatherData[city].Temperature}</p>
-                        <p>Weather: {weatherData[city].WeatherText}</p>
-                        {weatherData[city].WeatherImage && (
-                            <img src={weatherData[city].WeatherImage} alt={weatherData[city].WeatherText} />
-                        )}
-                        {weatherData[city].AttireImage && (
-                            <img src={weatherData[city].AttireImage} alt="Attire" />
-                        )}
-                    </div>
-                ) : <p>Loading...</p>}
-                <button onClick={() => removeCity(city)}>Remove</button>
-            </div>
-        ))}
-    </div>
-);
+    return (
+        <div className="weather-app-container">
+            <h1>Weather Dashboard</h1>
+            <input
+                type="text"
+                value={newCity}
+                onChange={e => setNewCity(e.target.value)}
+                placeholder="Add New City"
+            />
+            <button onClick={addCity}>Add City</button>
+            {cities.map((city, index) => (
+                <div key={index}>
+                    <h2>{city}</h2>
+                    {weatherData[city] ? (
+                        <div>
+                            <p>Temperature: {weatherData[city].Temperature}</p>
+                            <p>Weather: {weatherData[city].WeatherText}</p>
+                            {weatherData[city].WeatherImage && (
+                                <img src={weatherData[city].WeatherImage} alt={weatherData[city].WeatherText} />
+                            )}
+                            {weatherData[city].AttireImage && (
+                                <img src={weatherData[city].AttireImage} alt="Attire" />
+                            )}
+                        </div>
+                    ) : <p>Loading...</p>}
+                    <button onClick={() => removeCity(city)}>Remove</button>
+                </div>
+            ))}
+        </div>
+    );
 };
 
 export default Home;
