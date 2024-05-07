@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useAuth } from './AuthContext'; // Ensure this path is correct
 
 const Home = () => {
     axios.defaults.withCredentials = true;
+    const { user } = useAuth();
     const [cities, setCities] = useState([]);
     const [newCity, setNewCity] = useState('');
     const [weatherData, setWeatherData] = useState({});
@@ -11,8 +13,31 @@ const Home = () => {
     const apiKey = "zzxuz8sofa3hIRooJVdGU6qhmWpNE1jd";
 
     useEffect(() => {
-        setLoading(false);
-    }, []);
+        if (user && user.id) {
+            axios.get('http://localhost:5000/preferences', { params: { user_id: user.id } })
+                .then(response => {
+                    setLoading(false);
+                })
+                .catch(error => {
+                    console.error('Error fetching preferences', error);
+                    setError('Failed to fetch preferences');
+                    setLoading(false);
+                });
+        } else {
+            setLoading(false);
+        }
+    }, [user]);
+
+    const checkSession = () => {
+        axios.get('http://localhost:5000/check_session')
+            .then(response => {
+                console.log('Session Data:', response.data);
+            })
+            .catch(error => {
+                console.error('Session Check Failed:', error);
+                alert('Session check failed. See console for details.');
+            });
+    };
 
     const fetchWeatherData = (cities) => {
       const cityData = {
@@ -94,19 +119,38 @@ const Home = () => {
 
     const addCity = () => {
         if (newCity.trim()) {
-            setCities([...cities, newCity]);
-            fetchWeatherData([...cities, newCity]);
-            setNewCity('');
+            axios.post('http://localhost:5000/cities', { user_id: user.id, city_name: newCity })
+                .then(() => {
+                    setCities([...cities, newCity]);
+                    fetchWeatherData([...cities, newCity]);
+                    setNewCity('');
+                })
+                .catch(error => {
+                    console.error('Error adding city', error);
+                    alert('Failed to add city. Please check your network or contact the administrator.');
+                });
         } else {
             alert('Please enter a city name.');
         }
     };
 
     const removeCity = (cityToRemove) => {
-        const updatedCities = cities.filter(city => city !== cityToRemove);
-        setCities(updatedCities);
-        fetchWeatherData(updatedCities);
+        const encodedCityName = encodeURIComponent(cityToRemove);
+        axios.delete(`http://localhost:5000/cities/${encodedCityName}`)
+            .then(() => {
+                const updatedCities = cities.filter(city => city !== cityToRemove);
+                setCities(updatedCities);
+                fetchWeatherData(updatedCities);
+            })
+            .catch(error => {
+                console.error('Error removing city', error);
+                alert('Failed to remove city. Please check your network or contact the administrator.');
+            });
     };
+
+    if (!user) {
+        return <div>Please log in to view this page.</div>;
+    }
 
     return (
       <div className="weather-app-container">
