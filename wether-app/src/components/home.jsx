@@ -73,15 +73,15 @@ const Home = () => {
             }
         };
         const weatherImages = {
-            "Sunny": "../images/w/sunny.png",
-            "Partly Cloudy": "../images/w/partly_cloudy.png",
-            "Clear": "../images/w/clear.png",
+            "Sunny": "./images/w/sunny.png",
+            "Partly Cloudy": "./images/w/partly_cloudy.png",
+            "Clear": "./images/w/clear.png",
             // Add more images for other weather conditions as needed
         };
         const attireImages = {
-            "Sunny": "../images/a/light_clothing.png",
-            "Partly Cloudy": "../images/a/light_jacket.png",
-            "Clear": "../images/a/casual.png",
+            "Sunny": "./images/a/light_clothing.png",
+            "Partly eCloudy": "./images/a/light_jacket.png",
+            "Clear": "./images/a/casual.png",
             // Add more images for other weather conditions as needed
         };
 
