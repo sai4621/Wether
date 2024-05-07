@@ -60,11 +60,11 @@ const Home = () => {
 
         const hardcodedWeatherData = {
             "348707": { // Baltimore's locationId
-                Temperature: "20°C", // Assuming 20°C
+                Temperature: "15°C", // Assuming 20°C
                 WeatherCode: 1 // Sunny
             },
             "349727": { // New York's locationId
-                Temperature: "18°C", // Assuming 18°C
+                Temperature: "7°C", // Assuming 18°C
                 WeatherCode: 2 // Partly Cloudy
             },
             "347625": { // Los Angeles's locationId
@@ -80,7 +80,7 @@ const Home = () => {
         };
         const attireImages = {
             "Sunny": "./images/a/light_clothing.png",
-            "Partly eCloudy": "./images/a/light_jacket.png",
+            "Partly Cloudy": "./images/a/light_jacket.png",
             "Clear": "./images/a/casual.png",
             // Add more images for other weather conditions as needed
         };

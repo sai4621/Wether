@@ -1,78 +1,123 @@
-/*-------------------START OF NAV-------------------*/ 
+/*-------------------START OF NAV-------------------*/
+
+/* Navigation container styles */
 .nav {
   display: flex;
+  /* Display items in a row */
   justify-content: space-between;
+  /* Distribute items along the main axis */
   align-items: center;
+  /* Center items vertically */
   width: 100%;
+  /* Full width */
   position: fixed;
+  /* Fix navigation at the top */
   top: 0;
   left: 0;
   background-color: skyblue;
+  /* Background color */
 }
 
+/* Unordered list inside navigation */
 .nav ul {
   display: flex;
+  /* Display items in a row */
   list-style: none;
+  /* Remove list bullets */
   margin: 0;
   padding: 0;
   justify-content: flex-end;
+  /* Align items to the end */
   order: 1;
+  /* Order items */
   padding: 15px 20px;
+  /* Padding */
 }
 
+/* Styling for navigation span */
 .nav span {
   font-size: 1.5rem;
+  /* Font size */
   font-weight: 700;
+  /* Font weight */
   padding: 15px 20px;
+  /* Padding */
   color: white;
+  /* Text color */
 }
 
+/* Styling for navigation list items */
 .nav li {
   margin: 0 10px;
+  /* Margin */
 }
 
+/* Styling for navigation links */
 .nav a {
   text-decoration: none;
+  /* Remove underline */
   color: white;
+  /* Text color */
   font-family: sans-serif;
+  /* Font family */
 }
 
+/* Hamburger icon */
 .nav .hamburger {
   display: none;
+  /* Initially hidden */
   cursor: pointer;
+  /* Cursor type */
 }
 
+/* Styling for open navigation */
 .nav ul.open {
-    display: flex;
-    flex-direction: column;
-    background-color: rgb(106, 201, 236);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    justify-content: center;
-    align-items: center;
-    z-index: 1;
+  display: flex;
+  /* Display items in a column */
+  flex-direction: column;
+  /* Column direction */
+  background-color: rgb(106, 201, 236);
+  /* Background color */
+  position: absolute;
+  /* Absolute positioning */
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* Full width */
+  height: 100vh;
+  /* Full height */
+  justify-content: center;
+  /* Center items vertically */
+  align-items: center;
+  /* Center items horizontally */
+  z-index: 1;
+  /* Z-index for stacking */
 }
 
+/* Styling for list items in open navigation */
 .nav ul.open li {
   margin: 10px 0;
+  /* Margin */
 }
 
+/* Media query for small screens */
 @media (max-width: 768px) {
   .nav ul {
     display: none;
+    /* Hide navigation on small screens */
   }
 
   .nav .hamburger {
     display: block;
+    /* Display hamburger icon */
   }
-} 
+}
+
 /*-------------------END OF NAV-------------------*/
 
 /*-------------------START OF NEW-NAV-------------------*/
-/* styles.css */
+
+/* Styles for a new version of navigation (commented out) */
 
 /* .header {
   display: flex;
@@ -108,149 +153,160 @@
 /*-------------------END OF NEW-NAV-------------------*/
 
 /*-------------------START OF WEATHER-APP-------------------*/
+
 /* Root container styles */
 #root {
-max-width: 1280px;
-margin: 0 auto;
-padding: 2rem;
-text-align: center;
+  max-width: 1280px; /* Max width */
+  margin: 0 auto; /* Center horizontally */
+  padding: 2rem; /* Padding */
+  text-align: center; /* Center text */
 }
 
 /* Logo styles */
 .logo {
-height: 6em;
-padding: 1.5em;
-will-change: filter;
-transition: filter 300ms;
+  height: 6em; /* Height */
+  padding: 1.5em; /* Padding */
+  will-change: filter; /* Animate filter */
+  transition: filter 300ms; /* Transition */
 }
 
+/* Hover effect for logo */
 .logo:hover {
-filter: drop-shadow(0 0 2em #646cffaa);
+  filter: drop-shadow(0 0 2em #646cffaa); /* Drop shadow on hover */
 }
 
+/* Hover effect for React logo */
 .logo.react:hover {
-filter: drop-shadow(0 0 2em #61dafbaa);
+  filter: drop-shadow(0 0 2em #61dafbaa); /* Drop shadow on hover */
 }
 
 /* Logo spin animation */
 @keyframes logo-spin {
-from {
-  transform: rotate(0deg);
-}
-to {
-  transform: rotate(360deg);
-}
+  from {
+    transform: rotate(0deg); /* Rotate from 0 degrees */
+  }
+  to {
+    transform: rotate(360deg); /* Rotate to 360 degrees */
+  }
 }
 
 /* Reduced motion preference for users */
 @media (prefers-reduced-motion: no-preference) {
-a:nth-of-type(2) .logo {
-  animation: logo-spin infinite 20s linear;
-}
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear; /* Infinite rotation */
+  }
 }
 
 /* Card styles */
 .card {
-padding: 2em;
+  padding: 2em; /* Padding */
 }
 
-/* Docs link color */
+/* Link color for "Read the docs" */
 .read-the-docs {
-color: #555; /* Darker color for better readability */
+  color: #555; /* Dark color */
 }
 
 /* Main weather app container styles */
 .weather-app-container {
-background-color: #e0f2f1; /* Soft teal background */
-min-height: 100vh;
-padding: 20px;
-box-sizing: border-box;
+  background-color: #f0f8ff; /* Light blue background */
+  min-height: 100vh; /* Minimum height */
+  padding: 20px; /* Padding */
+  box-sizing: border-box; /* Include padding in width/height calculation */
+  color: black; /* Font color */
 }
 
 /* Weather information section styles */
 .weather-info {
-display: flex;
-flex-direction: column;
-align-items: center;
+  display: flex; /* Display items in a row */
+  flex-direction: column; /* Column direction */
+  align-items: center; /* Center items horizontally */
 }
 
 /* Styles for current weather and forecast containers */
-.current-weather, .forecast {
-background-color: #ffffff;
-color: #333; /* Dark text for better readability */
-padding: 20px;
-border-radius: 8px;
-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-margin: 20px 0;
-width: 80%;
-max-width: 600px;
-text-align: center;
+.current-weather,
+.forecast {
+  background-color: #ffffff; /* White background */
+  color: #333; /* Dark text */
+  padding: 20px; /* Padding */
+  border-radius: 8px; /* Border radius */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Box shadow */
+  margin: 20px 0; /* Margin */
+  width: 80%; /* Width */
+  max-width: 600px; /* Max width */
+  text-align: center; /* Center text */
+  color: black; /* Font color */
 }
 
 /* Styles for individual forecast day entries */
 .forecast-day {
-border: 1px solid #ddd;
-padding: 10px;
-margin: 10px 0;
-border-radius: 8px;
-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-background-color: #fafafa; /* Light grey background for odd items */
+  border: 1px solid #ddd; /* Border */
+  padding: 10px; /* Padding */
+  margin: 10px 0; /* Margin */
+  border-radius: 8px; /* Border radius */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Box shadow */
+  background-color: #f5f5f5; /* Light gray background */
+  color: #555; /* Darker text color */
 }
 
 /* Additional styles for improved readability */
 .forecast-day p {
-margin: 5px 0;
-color: #333; /* Ensuring text is easily readable */
+  margin: 5px 0; /* Margin */
 }
 
-/* For odd forecast days, a slightly different background for stripe effect */
+/* Stripe effect for odd forecast days */
 .forecast-day:nth-child(odd) {
-background-color: #f0f0f0;
+  background-color: #eaeaea; /* Light gray background for stripe effect */
 }
 
+/* Location selector styles */
 .location-selector {
-background-color: #ffffff;
-padding: 20px;
-border-radius: 8px;
-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-width: 80%;
-max-width: 600px;
-text-align: center;
-margin: 0 auto; /* Center align horizontally */
-margin-top: 30px; /* Optional: Add some space above location selector */
+  background-color: #ffffff; /* White background */
+  padding: 20px; /* Padding */
+  border-radius: 8px; /* Border radius */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Box shadow */
+  width: 80%; /* Width */
+  max-width: 600px; /* Max width */
+  text-align: center; /* Center text */
+  margin: 0 auto; /* Center horizontally */
+  margin-top: 30px; /* Margin top */
 }
 
+/* Styles for location selector label */
 .location-selector label {
-margin-right: 10px; /* Optional: Add some space between label and input */
+  margin-right: 10px; /* Margin right */
 }
 
+/* Styles for location input */
 .location-selector input[type="text"] {
-padding: 8px; /* Optional: Adjust input padding */
-border: 1px solid #ccc; /* Optional: Add a border */
-border-radius: 4px; /* Optional: Add border radius */
+  padding: 8px; /* Padding */
+  border: 1px solid #ccc; /* Border */
+  border-radius: 4px; /* Border radius */
 }
 
+/* Location info styles */
 .location-info {
-margin-top: 20px; /* Optional: Add some space between location info and other content */
+  margin-top: 20px; /* Margin top */
 }
 
+/* Styles for location info heading */
 .location-info h2 {
-margin-bottom: 10px; /* Optional: Add some space below heading */
+  margin-bottom: 10px; /* Margin bottom */
 }
 
+/* Styles for location info paragraph */
 .location-info p {
-margin: 5px 0; /* Optional: Adjust paragraph margin */
+  margin: 5px 0; /* Margin */
 }
 
+/* Center-align text inside the input */
 #city {
-text-align: center; /* Center align the text inside the input */
-
+  text-align: center; /* Center text */
 }
 
+/* Center-align text inside the label */
 label[for="city"] {
-text-align: center; /* Center-align the text inside the label */
+  text-align: center; /* Center text */
 }
-
 
 /*-------------------END OF WEATHER-APP-------------------*/
-
