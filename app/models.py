@@ -13,14 +13,22 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
     
-from app import db
 
 class UserPreference(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    preference_key = db.Column(db.String(100), nullable=False)
-    preference_value = db.Column(db.String(100), nullable=False)
+    temperatureUnit = db.Column(db.String(100), nullable=True)  # Ensure this attribute exists
 
     def __repr__(self):
-        return f'<UserPreference {self.preference_key}: {self.preference_value}>'
+        return f'<UserPreference {self.temperatureUnit}>'
+
+
+
+class City(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __repr__(self):
+        return f'<City {self.name}>'
 

@@ -1,33 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useAuth } from './AuthContext'; // Ensure proper import
 
 const Preferences = () => {
-    const { user } = useAuth();
-    const [preferences, setPreferences] = useState({
-        temperatureUnit: 'C',
-        favoriteCity: ''
-    });
+    const [temperatureUnit, setTemperatureUnit] = useState('C');
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+
+    // Hardcoded user ID for testing
+    const userId = '1'; // Assuming you have a user ID after login
 
     useEffect(() => {
-        if (user) {
-            axios.get('/preferences', { params: { user_id: user.id } })
+        if (userId) {
+            axios.get('http://localhost:5000/preferences', { params: { user_id: userId } })
                 .then(response => {
-                    setPreferences(response.data.preferences);
+                    if (response.data.temperatureUnit) {
+                        setTemperatureUnit(response.data.temperatureUnit);
+                    }
                     setLoading(false);
                 })
-                .catch(error => console.error('Error fetching preferences', error));
+                .catch(error => {
+                    console.error('Error fetching preferences:', error);
+                    setError('Failed to fetch preferences. Please try again later.');
+                    setLoading(false);
+                });
+        } else {
+            setError('User information not available. Please log in.');
+            setLoading(false);
         }
-    }, [user]);
+    }, [userId]); // Include userId in the dependency array
 
-    const handleSave = (key, value) => {
-        axios.post('/preferences', { user_id: user.id, preference_key: key, preference_value: value })
-            .then(response => alert('Preferences saved!'))
-            .catch(error => console.error('Error saving preferences', error));
+    const handleSave = (value) => {
+        setTemperatureUnit(value);
+        if (userId) {
+            axios.post('http://localhost:5000/preferences', {
+                user_id: 1,
+                temperatureUnit: value
+            }, {
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => {
+                alert('Preferences saved successfully!');
+            })
+            .catch(error => {
+                console.error('Error saving preferences:', error);
+                setError('Failed to save preferences. Please try again later.');
+                setTemperatureUnit(temperatureUnit); // Revert to the previous selection on error
+            });
+        } else {
+            setError('User information not available. Please log in.');
+        }
     };
 
     if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
 
     return (
         <div>
@@ -35,22 +60,13 @@ const Preferences = () => {
             <div>
                 <label>Temperature Unit:</label>
                 <select
-                    value={preferences.temperatureUnit}
-                    onChange={e => handleSave('temperatureUnit', e.target.value)}
+                    value={temperatureUnit}
+                    onChange={e => handleSave(e.target.value)}
                 >
                     <option value="C">Celsius</option>
                     <option value="F">Fahrenheit</option>
                 </select>
             </div>
-            <div>
-                <label>Favorite City:</label>
-                <input
-                    type="text"
-                    value={preferences.favoriteCity}
-                    onChange={e => handleSave('favoriteCity', e.target.value)}
-                />
-            </div>
-            <button onClick={() => handleSave()}>Save Preferences</button>
         </div>
     );
 };

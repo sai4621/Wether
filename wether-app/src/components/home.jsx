@@ -1,121 +1,181 @@
-import React, { useState, useEffect } from "react";
-import "./styles.css";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useAuth } from './AuthContext'; // Ensure this path is correct
 
-function Home() {
-  const [currentWeather, setCurrentWeather] = useState(null);
-  const [forecast, setForecast] = useState(null);
-  const [location, setLocation] = useState(null);
-  const [cityName, setCityName] = useState("New York"); // State to hold the entered city name
+const Home = () => {
+    axios.defaults.withCredentials = true;
+    const { user } = useAuth();
+    const [cities, setCities] = useState([]);
+    const [newCity, setNewCity] = useState('');
+    const [weatherData, setWeatherData] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+    const apiKey = "zzxuz8sofa3hIRooJVdGU6qhmWpNE1jd";
 
-  useEffect(() => {
-    const apiKey = "7sUh6NAVuaidqDA2A6rh6Y4Y8jJlcqwT";
-    const locationUrl = `http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${apiKey}&q=${encodeURIComponent(
-      cityName
-    )}`;
-
-    const fetchLocationData = async () => {
-      try {
-        const locationResponse = await fetch(locationUrl);
-        const locationData = await locationResponse.json();
-        if (locationData.length > 0) {
-          const locationId = locationData[0].Key;
-          const currentConditionsUrl = `https://dataservice.accuweather.com/currentconditions/v1/${locationId}?apikey=${apiKey}`;
-          const forecastUrl = `https://dataservice.accuweather.com/forecasts/v1/daily/5day/${locationId}?apikey=${apiKey}&metric=true`;
-          const [currentResponse, forecastResponse] = await Promise.all([
-            fetch(currentConditionsUrl),
-            fetch(forecastUrl),
-          ]);
-
-          const currentData = await currentResponse.json();
-          const forecastData = await forecastResponse.json();
-
-          setCurrentWeather(currentData[0]);
-          setForecast(forecastData);
-          setLocation(locationData[0]);
+    useEffect(() => {
+        if (user && user.id) {
+            axios.get('http://localhost:5000/preferences', { params: { user_id: user.id } })
+                .then(response => {
+                    setLoading(false);
+                })
+                .catch(error => {
+                    console.error('Error fetching preferences', error);
+                    setError('Failed to fetch preferences');
+                    setLoading(false);
+                });
         } else {
-          // Clear weather data if location not found
-          setCurrentWeather(null);
-          setForecast(null);
-          setLocation(null);
+            setLoading(false);
         }
-      } catch (error) {
-        console.error("Failed to fetch weather data:", error);
-      }
+    }, [user]);
+
+    const checkSession = () => {
+        axios.get('http://localhost:5000/check_session')
+            .then(response => {
+                console.log('Session Data:', response.data);
+            })
+            .catch(error => {
+                console.error('Session Check Failed:', error);
+                alert('Session check failed. See console for details.');
+            });
     };
 
-    fetchLocationData();
-  }, [cityName]); // Trigger useEffect when cityName changes
-
-  const handleCityNameChange = (event) => {
-    setCityName(event.target.value);
+    const fetchWeatherData = (cities) => {
+      const cityData = {
+          "Baltimore": {
+              "Key": "348707",
+              "LocalizedName": "Baltimore"
+              // Add more details as necessary
+          },
+          "New York": {
+              "Key": "349727",
+              "LocalizedName": "New York"
+              // Add more details as necessary
+          },
+          "Los Angeles": {
+              "Key": "347625",
+              "LocalizedName": "Los Angeles"
+              // Add more details as necessary
+          }
+      };
+  
+      const hardcodedWeatherData = {
+          "348707": { // Baltimore's locationId
+              Temperature: "20°C", // Assuming 20°C
+              WeatherCode: 1 // Sunny
+          },
+          "349727": { // New York's locationId
+              Temperature: "18°C", // Assuming 18°C
+              WeatherCode: 2 // Partly Cloudy
+          },
+          "347625": { // Los Angeles's locationId
+              Temperature: "25°C", // Assuming 25°C
+              WeatherCode: 3 // Clear
+          }
+      };
+  
+      const weatherTexts = {
+          1: "Sunny",
+          2: "Partly Cloudy",
+          3: "Clear"
+          // Add more weather codes and texts as necessary
+      };
+  
+      const requests = cities.map(city => {
+          const cityInfo = cityData[city];
+  
+          if (!cityInfo) {
+              console.log(`No location found for city: ${city}`);
+              return Promise.resolve({ city, data: undefined });
+          }
+  
+          const locationId = cityInfo.Key;
+          const mockWeatherData = hardcodedWeatherData[locationId];
+  
+          if (mockWeatherData) {
+              return Promise.resolve({
+                  city,
+                  data: {
+                      Temperature: mockWeatherData.Temperature,
+                      WeatherText: weatherTexts[mockWeatherData.WeatherCode]
+                  }
+              });
+          } else {
+              console.error(`Mock weather data not found for ${city}`);
+              return Promise.resolve({ city, data: undefined });
+          }
+      });
+  
+      Promise.all(requests).then(results => {
+          const newWeatherData = results.reduce((acc, result) => {
+              acc[result.city] = result.data;
+              return acc;
+          }, {});
+          setWeatherData(newWeatherData);
+          console.log('Updated weather data:', newWeatherData);
+      });
   };
 
-  const recommendAttire = (temperature) => {
-    if (temperature < 0) return "thermal layers, a heavy coat, and gloves";
-    else if (temperature < 10) return "a coat, and consider a hat and gloves";
-    else if (temperature < 20) return "a light jacket or sweater";
-    else if (temperature < 30) return "light clothing";
-    else return "shorts and a t-shirt";
-  };
+  
 
-  return (
-    <div className="weather-app-container">
-      <div className="location-selector">
-        <label htmlFor="city">Enter City Name</label>
-        <input
-          type="text"
-          id="city"
-          value={cityName}
-          onChange={handleCityNameChange}
-        />
-      </div>
-      <div className="weather-info">
-        {location && (
-          <div className="location-info">
-            <h2>Location</h2>
-            <p>City: {location.LocalizedName}</p>
-            <p>Country: {location.Country.LocalizedName}</p>
-          </div>
-        )}
-        {currentWeather && (
-          <div className="current-weather">
-            <h2>Current Weather</h2>
-            <p>{currentWeather.WeatherText}</p>
-            <p>Temperature: {currentWeather.Temperature.Metric.Value}°C</p>
-            <p>
-              Attire Recommendation:{" "}
-              {recommendAttire(currentWeather.Temperature.Metric.Value)}
-            </p>
-          </div>
-        )}
-        {forecast && (
-          <div className="forecast">
-            <h2>5-Day Forecast</h2>
-            {forecast.DailyForecasts.map((day, index) => (
-              <div key={index} className="forecast-day">
-                <p>Date: {new Date(day.Date).toLocaleDateString()}</p>
-                <p>
-                  Min: {day.Temperature.Minimum.Value}°C, Max:{" "}
-                  {day.Temperature.Maximum.Value}°C
-                </p>
-                <p>
-                  Day: {day.Day.IconPhrase}, Night: {day.Night.IconPhrase}
-                </p>
-                <p>
-                  Attire for the day:{" "}
-                  {recommendAttire(
-                    (day.Temperature.Maximum.Value +
-                      day.Temperature.Minimum.Value) /
-                      2
-                  )}
-                </p>
+    const addCity = () => {
+        if (newCity.trim()) {
+            axios.post('http://localhost:5000/cities', { user_id: user.id, city_name: newCity })
+                .then(() => {
+                    setCities([...cities, newCity]);
+                    fetchWeatherData([...cities, newCity]);
+                    setNewCity('');
+                })
+                .catch(error => {
+                    console.error('Error adding city', error);
+                    alert('Failed to add city. Please check your network or contact the administrator.');
+                });
+        } else {
+            alert('Please enter a city name.');
+        }
+    };
+
+    const removeCity = (cityToRemove) => {
+        const encodedCityName = encodeURIComponent(cityToRemove);
+        axios.delete(`http://localhost:5000/cities/${encodedCityName}`)
+            .then(() => {
+                const updatedCities = cities.filter(city => city !== cityToRemove);
+                setCities(updatedCities);
+                fetchWeatherData(updatedCities);
+            })
+            .catch(error => {
+                console.error('Error removing city', error);
+                alert('Failed to remove city. Please check your network or contact the administrator.');
+            });
+    };
+
+    if (!user) {
+        return <div>Please log in to view this page.</div>;
+    }
+
+    return (
+      <div className="weather-app-container">
+          <h1>Weather Dashboard</h1>
+          <input
+              type="text"
+              value={newCity}
+              onChange={e => setNewCity(e.target.value)}
+              placeholder="Add New City"
+          />
+          <button onClick={addCity}>Add City</button>
+          {cities.map((city, index) => (
+              <div key={index}>
+                  <h2>{city}</h2>
+                  {weatherData[city] ? (
+                      <div>
+                          <p>Temperature: {weatherData[city].Temperature}</p>
+                          <p>Weather: {weatherData[city].WeatherText}</p>
+                      </div>
+                  ) : <p>Loading...</p>}
+                  <button onClick={() => removeCity(city)}>Remove</button>
               </div>
-            ))}
-          </div>
-        )}
+          ))}
       </div>
-    </div>
   );
-}
+};
 
 export default Home;

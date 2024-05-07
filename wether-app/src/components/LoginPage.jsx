@@ -15,25 +15,21 @@ const LoginPage = () => {
     
     const handleSignIn = async (event) => {
       event.preventDefault();
-      console.log("Attempting to log in with", username, password); // Debugging
-      setError("");
       try {
           const response = await axios.post('http://localhost:5000/login', { username, password });
-          console.log("Login response:", response); // Debugging
           if (response.data.status === 'success') {
-              login(username);  // This should update the context
-              navigate('/');    // Redirect to home or another page
+              // Pass the entire user data object to the login function
+              login(response.data);
+              navigate('/');  // Redirect to home or another page
           } else {
               throw new Error(response.data.message);
           }
       } catch (error) {
-          console.error("Login error:", error); // Debugging
+          console.error("Login error:", error);
           setError("Failed to login: " + (error.response?.data?.message || error.message));
       }
-    };
-
-
-    
+  };
+  
 
     const handleSignUp = async (event) => {
         event.preventDefault();

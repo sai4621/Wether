@@ -18,33 +18,30 @@ const Navbar = () => {
     setIsMenuOpen(false); // Optionally close the menu
   };
 
+  // Function to determine the active class
+  const getActiveClass = ({ isActive }) => isActive ? "active" : "";
+
   return (
     <nav className="nav">
-      <div className="nav-left">
-        {user ? (
-          <span className="user-greeting">Hey, {user.username}!</span>
-        ) : (
-          <span>Weather</span>
-        )}
-      </div>
+      <span>Weather</span>
       <div className="hamburger" onClick={toggleMenu}>
         <span className="line">=</span>
       </div>
       <ul className={isMenuOpen ? "open" : ""}>
         <li>
-          <NavLink to="/" activeClassName="active" exact>
+          <NavLink to="/" className={getActiveClass}>
             Home
           </NavLink>
         </li>
         <li>
-          <NavLink to="/about" activeClassName="active">
+          <NavLink to="/about" className={getActiveClass}>
             About
           </NavLink>
         </li>
         {user ? (
           <>
             <li>
-              <NavLink to="/preferences" activeClassName="active">
+              <NavLink to="/preferences" className={getActiveClass}>
                 Preferences
               </NavLink>
             </li>
@@ -56,7 +53,7 @@ const Navbar = () => {
           </>
         ) : (
           <li>
-            <NavLink to="/login" activeClassName="active">
+            <NavLink to="/login" className={getActiveClass}>
               Login
             </NavLink>
           </li>

@@ -1,22 +1,24 @@
-from flask import Flask, session
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-
+from flask_session import Session
 
 app = Flask(__name__, static_folder='static_app/dist')
+app.config['ENV'] = 'development'
+app.config['DEBUG'] = True
 app.config['SECRET_KEY'] = 'huzaifa_was_here'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SESSION_TYPE'] = 'filesystem'
 
 db = SQLAlchemy(app)
-CORS(app)
+# Set up CORS to explicitly allow methods and maybe headers
+CORS(app, supports_credentials=True, origins="http://localhost:5173", methods=["GET", "POST", "DELETE", "OPTIONS"], allow_headers=["Content-Type", "Authorization", "X-Requested-With"])
+Session(app)
 
-# After defining db, import the models
-from app.models import User  # Ensure this import is after db is defined
+# Ensure models and routes are imported after db and CORS setup
+from app.models import User, UserPreference, City
+from app import routes
 
-# Apply database tables creation
 with app.app_context():
     db.create_all()
-
-# Now import routes
-from app import routes
