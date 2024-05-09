@@ -310,3 +310,50 @@ label[for="city"] {
 }
 
 /*-------------------END OF WEATHER-APP-------------------*/
+
+/*-------------------START OF SIGN-UP-------------------*/
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.form-container {
+  max-width: 300px;
+  width: 100%;
+  background-color: rgba(106, 201, 236, 0.7); /* Translucent white background */
+  border-radius: 8px; /* Rounded corners */
+  padding: 20px; /* Add padding */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a shadow */
+}
+
+.signin-button,
+.signup-button,
+button[type="submit"] {
+  margin-top: 1em; /* Add margin to the top */
+  margin-bottom: 0.5em; /* Reduce margin at the bottom */
+  padding: 0.5em 1em;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  background-color: rgb(106, 201, 236); /* Blue background color */
+}
+
+.signin-button {
+  margin-right: 1em;
+}
+
+.signup-button {
+  margin-left: 1em;
+}
+
+.username,
+.password,
+.confirm-password {
+  margin-right: 1em;
+  color: #fff;
+  font-weight: bold;
+}

@@ -165,35 +165,58 @@ const Home = () => {
     }
 
     return (
-        <div className="weather-app-container">
-            <h1>Weather Dashboard</h1>
-            <input
-                type="text"
-                value={newCity}
-                onChange={e => setNewCity(e.target.value)}
-                placeholder="Add New City"
-            />
-            <button onClick={addCity}>Add City</button>
-            {cities.map((city, index) => (
-                <div key={index}>
-                    <h2>{city}</h2>
-                    {weatherData[city] ? (
-                        <div>
-                            <p>Temperature: {weatherData[city].Temperature}</p>
-                            <p>Weather: {weatherData[city].WeatherText}</p>
-                            {weatherData[city].WeatherImage && (
-                                <img src={weatherData[city].WeatherImage} alt={weatherData[city].WeatherText} />
-                            )}
-                            {weatherData[city].AttireImage && (
-                                <img src={weatherData[city].AttireImage} alt="Attire" />
-                            )}
-                        </div>
-                    ) : <p>Loading...</p>}
-                    <button onClick={() => removeCity(city)}>Remove</button>
+        <div className="login-container">
+          <div className="form-container">
+            <button className="signin-button" onClick={() => setIsSigningUp(false)}>
+              Sign In
+            </button>
+            <button className="signup-button" onClick={() => setIsSigningUp(true)}>
+              Sign Up
+            </button>
+    
+            <div className="signup-form" style={{ display: isSigningUp ? "block" : "none" }}>
+              <form onSubmit={handleSignUp}>
+                <div className="form-element">
+                  <label htmlFor="username">Username</label>
+                  <input type="text" id="username" name="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
                 </div>
-            ))}
+    
+                <div className="form-element">
+                  <label htmlFor="password">Password</label>
+                  <input type="password" id="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                </div>
+    
+                <div className="form-element">
+                  <label htmlFor="confirm-password">Confirm Password</label>
+                  <input type="password" id="confirm-password" name="confirmPassword" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                </div>
+    
+                <div className="form-element">
+                  <button className="signup-button" type="submit">Sign Up</button>
+                </div>
+              </form>
+            </div>
+    
+            <form onSubmit={handleSignIn} style={{ display: isSigningUp ? "none" : "block" }}>
+              <div className="form-element">
+                <label htmlFor="username">Username</label>
+                <input type="text" id="username" name="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+              </div>
+    
+              <div className="form-element">
+                <label htmlFor="password">Password</label>
+                <input type="password" id="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              </div>
+    
+              <div className="form-element">
+                <button className="signin-button" type="submit">Sign In</button>
+              </div>
+            </form>
+    
+            {error && <p>{error}</p>}
+          </div>
         </div>
-    );
-};
+      );
+    };
 
 export default Home;
