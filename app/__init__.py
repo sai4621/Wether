@@ -23,7 +23,7 @@ from app import routes
 with app.app_context():
     db.create_all()
 
-@app.route('/home/')
+@app.route('/')
 def serve():
     return send_from_directory(app.static_folder, 'index.html')
 
