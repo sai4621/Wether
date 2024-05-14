@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';  // Import useNavigate
 import { useAuth } from './AuthContext';  // Make sure this path is correct relative to LoginPage
+import "./styles.css";
 
 
 const LoginPage = () => {
@@ -52,37 +53,59 @@ const LoginPage = () => {
     };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh" }}>
-      <div style={{ maxWidth: "300px", width: "100%" }}>
-        <button onClick={() => setIsSigningUp(false)}>Sign In</button>
-        <button onClick={() => setIsSigningUp(true)}>Sign Up</button>
+<div className="login-container">
+  <div className="form-container">
+    <button className="signin-button" onClick={() => setIsSigningUp(false)}>
+      Sign In
+    </button>
+    <button className="signup-button" onClick={() => setIsSigningUp(true)}>
+      Sign Up
+    </button>
 
-        <form onSubmit={isSigningUp ? handleSignUp : handleSignIn}>
-          <div style={{ marginBottom: "1em" }}>
-            <label htmlFor="username">Username</label>
-            <input type="text" id="username" name="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
-          </div>
+    <div className="signup-form" style={{ display: isSigningUp ? "block" : "none" }}>
+      <form onSubmit={handleSignUp}>
+        <div className="form-element">
+          <label className = "username"htmlFor="username">Username</label>
+          <input type="text" id="username" name="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+        </div>
 
-          <div style={{ marginBottom: "1em" }}>
-            <label htmlFor="password">Password</label>
-            <input type="password" id="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-          </div>
+        <div className="form-element">
+          <label className="password" htmlFor="password">Password</label>
+          <input type="password" id="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        </div>
 
-          {isSigningUp && (
-            <div style={{ marginBottom: "1em" }}>
-              <label htmlFor="confirm-password">Confirm Password</label>
-              <input type="password" id="confirm-password" name="confirmPassword" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
-            </div>
-          )}
+        <div className="form-element">
+          <label className = "confirm-password" htmlFor="confirm-password">Confirm Password</label>
+          <input type="password" id="confirm-password" name="confirmPassword" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+        </div>
 
-          <div style={{ marginBottom: "1em" }}>
-            <button type="submit">{isSigningUp ? "Sign Up" : "Sign In"}</button>
-          </div>
-
-          {error && <p>{error}</p>}
-        </form>
-      </div>
+        <div className="form-element">
+          <button className="" type="submit">Sign Up</button> {/* Use the correct class here */}
+        </div>
+      </form>
     </div>
+
+    <form onSubmit={handleSignIn} style={{ display: isSigningUp ? "none" : "block" }}>
+      <div className="form-element">
+        <label className = "username" htmlFor="username">Username</label>
+        <input type="text" id="username" name="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+      </div>
+
+      <div className="form-element">
+        <label className="password" htmlFor="password">Password</label>
+        <input type="password" id="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+      </div>
+
+      <div className="form-element">
+        <button className="signin-button" type="submit">Sign In</button> {/* Use the correct class here */}
+      </div>
+    </form>
+
+    {error && <p>{error}</p>}
+  </div>
+</div>
+
+
   );
 };
 
