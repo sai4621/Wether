@@ -4,11 +4,11 @@ from flask_cors import CORS
 from flask_session import Session
 import os
 
-app = Flask(__name__, static_folder='static_app/dist', static_url_path='/')
+app = Flask(__name__, static_folder='../wether-app/dist', static_url_path='/')
 app.config['ENV'] = 'development'
 app.config['DEBUG'] = True
 app.config['SECRET_KEY'] = 'huzaifa_was_here'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'  # Replace with PostgreSQL URI for production
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SESSION_TYPE'] = 'filesystem'
 
