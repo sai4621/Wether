@@ -35,6 +35,10 @@ def static_proxy(path):
         return send_from_directory(app.static_folder, path)
     else:
         return send_from_directory(app.static_folder, 'index.html')
+    
+@app.route("/favicon.ico")
+def favicon():
+    return "", 200
 
 if __name__ == '__main__':
     app.run(debug=True)
