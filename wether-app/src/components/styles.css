@@ -1,313 +1,302 @@
 /*-------------------START OF NAV-------------------*/
 
-/* Navigation container styles */
 .nav {
   display: flex;
-  /* Display items in a row */
   justify-content: space-between;
-  /* Distribute items along the main axis */
   align-items: center;
-  /* Center items vertically */
-  width: 100%;
-  /* Full width */
+  width: 98%;
   position: fixed;
-  /* Fix navigation at the top */
   top: 0;
   left: 0;
-  background-color: skyblue;
-  /* Background color */
+  background-color: #2c3e50;
+  padding: 10px 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 }
 
-/* Unordered list inside navigation */
 .nav ul {
   display: flex;
-  /* Display items in a row */
   list-style: none;
-  /* Remove list bullets */
   margin: 0;
   padding: 0;
-  justify-content: flex-end;
-  /* Align items to the end */
-  order: 1;
-  /* Order items */
-  padding: 15px 20px;
-  /* Padding */
 }
 
-/* Styling for navigation span */
 .nav span {
   font-size: 1.5rem;
-  /* Font size */
   font-weight: 700;
-  /* Font weight */
-  padding: 15px 20px;
-  /* Padding */
   color: white;
-  /* Text color */
 }
 
-/* Styling for navigation list items */
 .nav li {
   margin: 0 10px;
-  /* Margin */
 }
 
-/* Styling for navigation links */
 .nav a {
   text-decoration: none;
-  /* Remove underline */
   color: white;
-  /* Text color */
-  font-family: sans-serif;
-  /* Font family */
+  font-family: 'Arial', sans-serif;
+  transition: color 0.3s;
 }
 
-/* Hamburger icon */
+.nav a:hover {
+  color: #3498db;
+}
+
 .nav .hamburger {
   display: none;
-  /* Initially hidden */
   cursor: pointer;
-  /* Cursor type */
 }
 
-/* Styling for open navigation */
 .nav ul.open {
   display: flex;
-  /* Display items in a column */
   flex-direction: column;
-  /* Column direction */
-  background-color: rgb(106, 201, 236);
-  /* Background color */
+  background-color: #2c3e50;
   position: absolute;
-  /* Absolute positioning */
   top: 0;
   left: 0;
   width: 100%;
-  /* Full width */
   height: 100vh;
-  /* Full height */
   justify-content: center;
-  /* Center items vertically */
   align-items: center;
-  /* Center items horizontally */
   z-index: 1;
-  /* Z-index for stacking */
 }
 
-/* Styling for list items in open navigation */
 .nav ul.open li {
   margin: 10px 0;
-  /* Margin */
 }
 
-/* Media query for small screens */
 @media (max-width: 768px) {
   .nav ul {
     display: none;
-    /* Hide navigation on small screens */
   }
 
   .nav .hamburger {
     display: block;
-    /* Display hamburger icon */
   }
 }
 
 /*-------------------END OF NAV-------------------*/
 
-/*-------------------START OF NEW-NAV-------------------*/
-
-/* Styles for a new version of navigation (commented out) */
-
-/* .header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between; 
-  padding: 1rem 2rem; 
-}
-
-.logo {
-
-}
-
-.blue-gradient_text {
-  
-}
-
-.nav {
-  display: flex;
-  font-size: 1.125rem; 
-}
-
-.nav-link {
-  color: black;
-  text-decoration: none;
-  gap: 10rem; 
-
-}
-
-.nav-link.active {
-  color: #3b82f6; 
-}  */
-
-/*-------------------END OF NEW-NAV-------------------*/
-
 /*-------------------START OF WEATHER-APP-------------------*/
 
-/* Root container styles */
 #root {
-  max-width: 1280px; /* Max width */
-  margin: 0 auto; /* Center horizontally */
-  padding: 2rem; /* Padding */
-  text-align: center; /* Center text */
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
 }
 
-/* Logo styles */
 .logo {
-  height: 6em; /* Height */
-  padding: 1.5em; /* Padding */
-  will-change: filter; /* Animate filter */
-  transition: filter 300ms; /* Transition */
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
 }
 
-/* Hover effect for logo */
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa); /* Drop shadow on hover */
+  filter: drop-shadow(0 0 2em #646cffaa);
 }
 
-/* Hover effect for React logo */
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa); /* Drop shadow on hover */
+  filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
-/* Logo spin animation */
 @keyframes logo-spin {
   from {
-    transform: rotate(0deg); /* Rotate from 0 degrees */
+    transform: rotate(0deg);
   }
   to {
-    transform: rotate(360deg); /* Rotate to 360 degrees */
+    transform: rotate(360deg);
   }
 }
 
-/* Reduced motion preference for users */
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear; /* Infinite rotation */
+    animation: logo-spin infinite 20s linear;
   }
 }
 
-/* Card styles */
-.card {
-  padding: 2em; /* Padding */
-}
-
-/* Link color for "Read the docs" */
-.read-the-docs {
-  color: #555; /* Dark color */
-}
-
-/* Main weather app container styles */
 .weather-app-container {
-  background-color: #f0f8ff; /* Light blue background */
-  min-height: 100vh; /* Minimum height */
-  padding: 20px; /* Padding */
-  box-sizing: border-box; /* Include padding in width/height calculation */
-  color: black; /* Font color */
+  background-color: #ecf0f1;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+  color: #333;
 }
 
-/* Weather information section styles */
 .weather-info {
-  display: flex; /* Display items in a row */
-  flex-direction: column; /* Column direction */
-  align-items: center; /* Center items horizontally */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* Styles for current weather and forecast containers */
 .current-weather,
 .forecast {
-  background-color: #ffffff; /* White background */
-  color: #333; /* Dark text */
-  padding: 20px; /* Padding */
-  border-radius: 8px; /* Border radius */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Box shadow */
-  margin: 20px 0; /* Margin */
-  width: 80%; /* Width */
-  max-width: 600px; /* Max width */
-  text-align: center; /* Center text */
-  color: black; /* Font color */
+  background-color: #ffffff;
+  color: #333;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+  width: 80%;
+  max-width: 800px;
+  text-align: center;
 }
 
-/* Styles for individual forecast day entries */
 .forecast-day {
-  border: 1px solid #ddd; /* Border */
-  padding: 10px; /* Padding */
-  margin: 10px 0; /* Margin */
-  border-radius: 8px; /* Border radius */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Box shadow */
-  background-color: #f5f5f5; /* Light gray background */
-  color: #555; /* Darker text color */
+  border: 1px solid #949494;
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9;
 }
 
-/* Additional styles for improved readability */
 .forecast-day p {
-  margin: 5px 0; /* Margin */
+  margin: 5px 0;
 }
 
-/* Stripe effect for odd forecast days */
 .forecast-day:nth-child(odd) {
-  background-color: #eaeaea; /* Light gray background for stripe effect */
+  background-color: #f0f0f0;
 }
 
-/* Location selector styles */
 .location-selector {
-  background-color: #ffffff; /* White background */
-  padding: 20px; /* Padding */
-  border-radius: 8px; /* Border radius */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Box shadow */
-  width: 80%; /* Width */
-  max-width: 600px; /* Max width */
-  text-align: center; /* Center text */
-  margin: 0 auto; /* Center horizontally */
-  margin-top: 30px; /* Margin top */
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  max-width: 800px;
+  text-align: center;
+  margin: 0 auto;
+  margin-top: 30px;
 }
 
-/* Styles for location selector label */
 .location-selector label {
-  margin-right: 10px; /* Margin right */
+  margin-right: 10px;
 }
 
-/* Styles for location input */
 .location-selector input[type="text"] {
-  padding: 8px; /* Padding */
-  border: 1px solid #ccc; /* Border */
-  border-radius: 4px; /* Border radius */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
 
-/* Location info styles */
 .location-info {
-  margin-top: 20px; /* Margin top */
+  margin-top: 20px;
 }
 
-/* Styles for location info heading */
 .location-info h2 {
-  margin-bottom: 10px; /* Margin bottom */
+  margin-bottom: 10px;
 }
 
-/* Styles for location info paragraph */
 .location-info p {
-  margin: 5px 0; /* Margin */
+  margin: 5px 0;
 }
 
-/* Center-align text inside the input */
 #city {
-  text-align: center; /* Center text */
+  text-align: center;
 }
 
-/* Center-align text inside the label */
 label[for="city"] {
-  text-align: center; /* Center text */
+  text-align: center;
 }
 
 /*-------------------END OF WEATHER-APP-------------------*/
-  
+
+.city-data-container {
+  font-family: 'Arial', sans-serif;
+  margin: 20px;
+  color: #333;
+  text-align: center;
+}
+
+.current-weather {
+  margin-bottom: 20px;
+}
+
+.forecast {
+  margin-top: 20px;
+}
+
+.forecast-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 10px;
+}
+
+.forecast-item {
+  background: #f7f7f7;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.forecast-date,
+.forecast-time,
+.forecast-temperature,
+.forecast-description {
+  margin: 5px 0;
+}
+
+.forecast-icon {
+  width: 50px;
+  height: 50px;
+}
+
+/* Button styling */
+button {
+  background-color: #2980b9;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #3498db;
+}
+
+/* Input styling */
+input[type="text"] {
+  padding: 10px;
+  border: 1px solid #8f8b8b;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  width: 200px;
+}
+
+/* Text styling */
+h1, h2, h3, p {
+  margin: 10px 0;
+  color: #817f7f;
+}
+
+h1 {
+  font-size: 2.5rem;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+p {
+  font-size: 1rem;
+}
+
+/* Link styling */
+a {
+  color: #2980b9;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}

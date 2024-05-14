@@ -1,0 +1,47 @@
+.city-data-container {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    color: #c5c1c1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.current-weather {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.forecast {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.forecast-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 20px;
+    justify-items: center;
+}
+
+.forecast-item {
+    background: #e6e3e3;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.forecast-date,
+.forecast-time,
+.forecast-temperature,
+.forecast-description {
+    margin: 10px 0;
+    font-size: 1.1em;
+}
+
+.forecast-icon {
+    width: 80px;
+    height: 80px;
+}

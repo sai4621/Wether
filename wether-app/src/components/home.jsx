@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom'; // Import Link for navigation
 import { useAuth } from './AuthContext'; // Ensure this path is correct
 
 const Home = () => {
@@ -11,6 +12,7 @@ const Home = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [temperatureUnit, setTemperatureUnit] = useState('C');
+    const unsplashAccessKey = '_2z0hihM8RNRCdxzqxqlOhTcjCpSKHaX98wqRsAXVT4'; // Replace with your Unsplash access key
 
     useEffect(() => {
         if (user && user.user_id) {
@@ -33,29 +35,21 @@ const Home = () => {
         }
     }, [user]);
 
-    const checkSession = () => {
-        axios.get('http://localhost:5000/check_session')
-            .then(response => {
-                console.log('Session Data:', response.data);
-            })
-            .catch(error => {
-                console.error('Session Check Failed:', error);
-                alert('Session check failed. See console for details.');
-            });
-    };
-
     const fetchWeatherData = (cities) => {
         const requests = cities.map(city => {
             return axios.get('http://localhost:5000/weather', { params: { city, user_id: user.user_id } })
-                .then(response => ({
-                    city,
-                    data: {
-                        Temperature: response.data.main.temp,
-                        WeatherText: response.data.weather[0].description,
-                        WeatherImage: `http://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`,
-                        AttireImage: '/images/a/light_clothing.png' // Example image path
-                    }
-                }))
+                .then(response => {
+                    const temp = response.data.main.temp;
+                    return getAttireImage(temp).then(attireImage => ({
+                        city,
+                        data: {
+                            Temperature: temp,
+                            WeatherText: response.data.weather[0].description,
+                            WeatherImage: `http://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`,
+                            AttireImage: attireImage
+                        }
+                    }));
+                })
                 .catch(error => {
                     console.error(`Error fetching data for city ${city}:`, error);
                     return { city, data: undefined };
@@ -70,6 +64,31 @@ const Home = () => {
             setWeatherData(newWeatherData);
             console.log('Updated weather data:', newWeatherData);
         });
+    };
+
+    const getAttireImage = async (temperature) => {
+        let keyword;
+        if (temperatureUnit === 'F') {
+            if (temperature <= 32) keyword = 'winter clothing';
+            if (temperature > 32 && temperature <= 60) keyword = 'fall clothing';
+            if (temperature > 60 && temperature <= 75) keyword = 'spring clothing';
+            if (temperature > 75) keyword = 'summer clothing';
+        } else {
+            if (temperature <= 0) keyword = 'winter clothing';
+            if (temperature > 0 && temperature <= 15) keyword = 'fall clothing';
+            if (temperature > 15 && temperature <= 24) keyword = 'spring clothing';
+            if (temperature > 24) keyword = 'summer clothing';
+        }
+
+        const response = await axios.get('https://api.unsplash.com/search/photos', {
+            params: {
+                query: keyword,
+                client_id: unsplashAccessKey,
+                per_page: 1
+            }
+        });
+
+        return response.data.results[0].urls.small;
     };
 
     const addCity = () => {
@@ -118,7 +137,7 @@ const Home = () => {
             />
             <button onClick={addCity}>Add City</button>
             {cities.map((city, index) => (
-                <div key={index}>
+                <div key={index} className="city-weather">
                     <h2>{city}</h2>
                     {weatherData[city] ? (
                         <div>
@@ -130,6 +149,7 @@ const Home = () => {
                             {weatherData[city].AttireImage && (
                                 <img src={weatherData[city].AttireImage} alt="Attire" />
                             )}
+                            <Link to={`/city/${city}`}>View More</Link> {/* View More button */}
                         </div>
                     ) : <p>Loading...</p>}
                     <button onClick={() => removeCity(city)}>Remove</button>

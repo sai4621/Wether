@@ -13,7 +13,7 @@ app.config['SESSION_TYPE'] = 'filesystem'
 
 db = SQLAlchemy(app)
 # Set up CORS to explicitly allow methods and maybe headers
-CORS(app, supports_credentials=True, origins="http://localhost:5173")
+CORS(app, supports_credentials=True, origins="http://localhost:*")
 
 Session(app)
 

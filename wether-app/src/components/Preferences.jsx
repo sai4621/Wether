@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useAuth } from './AuthContext'; // Ensure the correct path to your AuthContext
 
 const Preferences = () => {
     const [temperatureUnit, setTemperatureUnit] = useState('C');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-
-    // Hardcoded user ID for testing
-    const userId = '1'; // Assuming you have a user ID after login
+    const { user } = useAuth(); // Get the user object from the context
 
     useEffect(() => {
-        if (userId) {
-            axios.get('http://localhost:5000/preferences', { params: { user_id: userId } })
+        if (user && user.user_id) {
+            axios.get('http://localhost:5000/preferences', { params: { user_id: user.user_id } })
                 .then(response => {
                     if (response.data.temperatureUnit) {
                         setTemperatureUnit(response.data.temperatureUnit);
@@ -27,13 +26,13 @@ const Preferences = () => {
             setError('User information not available. Please log in.');
             setLoading(false);
         }
-    }, [userId]); // Include userId in the dependency array
+    }, [user]); // Include user in the dependency array
 
     const handleSave = (value) => {
         setTemperatureUnit(value);
-        if (userId) {
+        if (user && user.user_id) {
             axios.post('http://localhost:5000/preferences', {
-                user_id: 1,
+                user_id: user.user_id,
                 temperatureUnit: value
             }, {
                 headers: { 'Content-Type': 'application/json' }
