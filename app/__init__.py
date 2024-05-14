@@ -29,6 +29,7 @@ def serve():
 
 @app.route('/<path:path>')
 def static_proxy(path):
+    # Send any other route to the index.html
     file_path = os.path.join(app.static_folder, path)
     if os.path.exists(file_path):
         return send_from_directory(app.static_folder, path)
