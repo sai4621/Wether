@@ -10,17 +10,22 @@ const Home = () => {
     const [weatherData, setWeatherData] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const apiKey = "zzxuz8sofa3hIRooJVdGU6qhmWpNE1jd";
+    const [temperatureUnit, setTemperatureUnit] = useState('C');
 
     useEffect(() => {
-        if (user && user.id) {
-            axios.get('http://localhost:5000/preferences', { params: { user_id: user.id } })
+        if (user && user.user_id) {
+            axios.get('http://localhost:5000/preferences', { params: { user_id: user.user_id } })
                 .then(response => {
-                    setLoading(false);
+                    setTemperatureUnit(response.data.temperatureUnit);
+                    return axios.get('http://localhost:5000/cities', { params: { user_id: user.user_id } });
+                })
+                .then(response => {
+                    setCities(response.data.cities);
+                    fetchWeatherData(response.data.cities);
                 })
                 .catch(error => {
-                    console.error('Error fetching preferences', error);
-                    setError('Failed to fetch preferences');
+                    console.error('Error fetching preferences or cities', error);
+                    setError('Failed to fetch preferences or cities');
                     setLoading(false);
                 });
         } else {
@@ -40,92 +45,36 @@ const Home = () => {
     };
 
     const fetchWeatherData = (cities) => {
-      const cityData = {
-          "Baltimore": {
-              "Key": "348707",
-              "LocalizedName": "Baltimore"
-          },
-          "New York": {
-              "Key": "349727",
-              "LocalizedName": "New York"
-          },
-          "Los Angeles": {
-              "Key": "347625",
-              "LocalizedName": "Los Angeles"
-          }
-      };
-  
-      const hardcodedWeatherData = {
-          "348707": { // Baltimore
-              Temperature: "15°C",
-              WeatherCode: 1 // Sunny
-          },
-          "349727": { // New York
-              Temperature: "7°C",
-              WeatherCode: 2 // Partly Cloudy
-          },
-          "347625": { // Los Angeles
-              Temperature: "25°C",
-              WeatherCode: 3 // Clear
-          },
-          "default": { // Default for other cities
-              Temperature: "20°C",
-              WeatherCode: 4 // Light Clouds
-          }
-      };
-  
-      const weatherImages = {
-          "Sunny": "./images/w/sunny.png",
-          "Partly Cloudy": "./images/w/partly_cloudy.png",
-          "Clear": "./images/w/clear.png",
-          "Light Clouds": "./images/w/light_clouds.png"
-      };
-  
-      const attireImages = {
-          "Sunny": "./images/a/light_clothing.png",
-          "Partly Cloudy": "./images/a/light_jacket.png",
-          "Clear": "./images/a/casual.png",
-          "Light Clouds": "./images/a/comfortable.png"
-      };
-  
-      const weatherTexts = {
-          1: "Sunny",
-          2: "Partly Cloudy",
-          3: "Clear",
-          4: "Light Clouds"
-      };
-  
-      const requests = cities.map(city => {
-          const cityInfo = cityData[city] || { Key: "default" }; // Use default if city not found
-  
-          const locationId = cityInfo.Key;
-          const mockWeatherData = hardcodedWeatherData[locationId] || hardcodedWeatherData["default"];
-  
-          return Promise.resolve({
-              city,
-              data: {
-                  Temperature: mockWeatherData.Temperature,
-                  WeatherText: weatherTexts[mockWeatherData.WeatherCode],
-                  WeatherImage: weatherImages[weatherTexts[mockWeatherData.WeatherCode]],
-                  AttireImage: attireImages[weatherTexts[mockWeatherData.WeatherCode]]
-              }
-          });
-      });
-  
-      Promise.all(requests).then(results => {
-          const newWeatherData = results.reduce((acc, result) => {
-              acc[result.city] = result.data;
-              return acc;
-          }, {});
-          setWeatherData(newWeatherData);
-          console.log('Updated weather data:', newWeatherData);
-      });
-  };
-  
+        const requests = cities.map(city => {
+            return axios.get('http://localhost:5000/weather', { params: { city, user_id: user.user_id } })
+                .then(response => ({
+                    city,
+                    data: {
+                        Temperature: response.data.main.temp,
+                        WeatherText: response.data.weather[0].description,
+                        WeatherImage: `http://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`,
+                        AttireImage: '/images/a/light_clothing.png' // Example image path
+                    }
+                }))
+                .catch(error => {
+                    console.error(`Error fetching data for city ${city}:`, error);
+                    return { city, data: undefined };
+                });
+        });
+
+        Promise.all(requests).then(results => {
+            const newWeatherData = results.reduce((acc, result) => {
+                acc[result.city] = result.data;
+                return acc;
+            }, {});
+            setWeatherData(newWeatherData);
+            console.log('Updated weather data:', newWeatherData);
+        });
+    };
 
     const addCity = () => {
         if (newCity.trim()) {
-            axios.post('http://localhost:5000/cities', { user_id: user.id, city_name: newCity })
+            axios.post('http://localhost:5000/cities', { user_id: user.user_id, city_name: newCity })
                 .then(() => {
                     setCities([...cities, newCity]);
                     fetchWeatherData([...cities, newCity]);
@@ -173,7 +122,7 @@ const Home = () => {
                     <h2>{city}</h2>
                     {weatherData[city] ? (
                         <div>
-                            <p>Temperature: {weatherData[city].Temperature}</p>
+                            <p>Temperature: {weatherData[city].Temperature} °{temperatureUnit}</p>
                             <p>Weather: {weatherData[city].WeatherText}</p>
                             {weatherData[city].WeatherImage && (
                                 <img src={weatherData[city].WeatherImage} alt={weatherData[city].WeatherText} />

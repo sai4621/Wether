@@ -1,5 +1,4 @@
 from app import db
-
 from werkzeug.security import check_password_hash
 
 class User(db.Model):
@@ -13,16 +12,13 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
     
-
 class UserPreference(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    temperatureUnit = db.Column(db.String(100), nullable=True)  # Ensure this attribute exists
+    temperatureUnit = db.Column(db.String(100), nullable=True)
 
     def __repr__(self):
         return f'<UserPreference {self.temperatureUnit}>'
-
-
 
 class City(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,4 +27,3 @@ class City(db.Model):
 
     def __repr__(self):
         return f'<City {self.name}>'
-

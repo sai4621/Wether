@@ -19,7 +19,6 @@ const LoginPage = () => {
       try {
           const response = await axios.post('http://localhost:5000/login', { username, password });
           if (response.data.status === 'success') {
-              // Pass the entire user data object to the login function
               login(response.data);
               navigate('/');  // Redirect to home or another page
           } else {
