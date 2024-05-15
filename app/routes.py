@@ -133,6 +133,7 @@ def convert_temperature(temp_kelvin, unit):
 def get_weather():
     city = request.args.get('city')
     user_id = request.args.get('user_id')
+    print(f'params passed: city: {city} {user_id}')
 
     user_preference = UserPreference.query.filter_by(user_id=user_id).first()
     preferred_unit = user_preference.temperatureUnit if user_preference else 'C'
@@ -145,6 +146,7 @@ def get_weather():
         temperature = convert_temperature(temperature_kelvin, preferred_unit)
         weather_data['main']['temp'] = round(temperature, 2)
         weather_data['main']['unit'] = preferred_unit
+        print('weather data:', weather_data)
         return jsonify(weather_data)
     else:
         return jsonify({"status": "fail", "message": "Error fetching weather data"}), response.status_code

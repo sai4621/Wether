@@ -4,10 +4,11 @@ import { useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext'; // Ensure this path is correct
 import './CityData.css'; // Import the CSS file
 
+
 const apiKey = "3f59299cb03f1d4beb6bd960a3f546fd";
 
+
 const CityData = () => {
-    const { cityName } = useParams();
     const { user } = useAuth();
     const [weatherDetails, setWeatherDetails] = useState(null);
     const [forecastData, setForecastData] = useState([]);
@@ -15,16 +16,24 @@ const CityData = () => {
     const [loading, setLoading] = useState(true);
     const [temperatureUnit, setTemperatureUnit] = useState('C');
 
-    useEffect(() => {
+    const dataFromLink = useParams()
+    const [cityName, setCityName] = useState(dataFromLink.cityName)
+    console.log("the city name: "  + cityName)
+
+    useEffect(() => { 
         const fetchPreferencesAndWeather = async () => {
             try {
                 if (user && user.user_id) {
                     // Fetch user preferences
-                    const prefResponse = await axios.get('http://localhost:5000/preferences', { params: { user_id: user.user_id } });
+                    console.log("first");
+                    const prefResponse = await  axios.get('http://localhost:5000/preferences', { params: { user_id: user.user_id } })
                     setTemperatureUnit(prefResponse.data.temperatureUnit);
-
+                    console.log("here working");
                     // Fetch current weather directly from OpenWeatherMap API
-                    const weatherResponse = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(cityName)}&appid=${apiKey}&units=metric`);
+                    const weatherResponse = await axios.get('http://localhost:5000/weather', { params: { city: cityName, user_id: user.user_id } })
+                    console.log("weather response:" + JSON.stringify(weatherResponse))
+
+
                     const currentWeather = {
                         Temperature: weatherResponse.data.main.temp,
                         WeatherText: weatherResponse.data.weather[0].description,
@@ -34,16 +43,18 @@ const CityData = () => {
                     setWeatherDetails(currentWeather);
 
                     // Fetch forecast data
-                    const forecastResponse = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(cityName)}&appid=${apiKey}&units=metric`);
+                    const forecastResponse = await axios.get('http://localhost:5000/weather', { params: { city: cityName, user_id: user.user_id } })
+                    console.log("filter forecast: " + JSON.stringify(forecastResponse, null, 2 ))
                     const filteredData = filterForecastData(forecastResponse.data);
                     setForecastData(filteredData);
 
                     setLoading(false);
                 } else {
                     setLoading(false);
+                    console.log("here else");
                 }
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.log('Error fetching data:', error);
                 setError('Failed to fetch data. Please try again later.');
                 setLoading(false);
             }
@@ -71,7 +82,23 @@ const CityData = () => {
     };
 
     const filterForecastData = (data) => {
-        return data.list.map((item) => {
+        const dt = null
+        const date = null
+        const temperature = null 
+        const weatherIcon = null
+        const weatherDescription = null
+
+        Object.keys(data).forEach(key =>  {
+            if(key === "dt"){
+                dt = key.dt
+            }
+            else if(date == "date"){
+                date
+            }
+        })
+        /*
+
+        return data.map((item) => {
             return {
                 dt: item.dt,
                 date: item.dt_txt,
@@ -80,6 +107,7 @@ const CityData = () => {
                 weatherDescription: item.weather[0].description,
             };
         });
+        */
     };
 
     if (loading) return <div>Loading...</div>;

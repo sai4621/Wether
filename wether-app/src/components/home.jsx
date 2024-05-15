@@ -80,15 +80,15 @@ const Home = () => {
             if (temperature > 24) keyword = 'summer clothing';
         }
 
-        const response = await axios.get('https://api.unsplash.com/search/photos', {
-            params: {
-                query: keyword,
-                client_id: unsplashAccessKey,
-                per_page: 1
-            }
-        });
+        // const response = await axios.get('https://api.unsplash.com/search/photos', {
+        //     params: {
+        //         query: keyword,
+        //         client_id: unsplashAccessKey,
+        //         per_page: 1
+        //     }
+        // });
 
-        return response.data.results[0].urls.small;
+        //return response.data.results[0].urls.small;
     };
 
     const addCity = () => {
@@ -146,9 +146,9 @@ const Home = () => {
                             {weatherData[city].WeatherImage && (
                                 <img src={weatherData[city].WeatherImage} alt={weatherData[city].WeatherText} />
                             )}
-                            {weatherData[city].AttireImage && (
+                            {/* {weatherData[city].AttireImage && (
                                 <img src={weatherData[city].AttireImage} alt="Attire" />
-                            )}
+                            )} */}
                             <Link to={`/city/${city}`}>View More</Link> {/* View More button */}
                         </div>
                     ) : <p>Loading...</p>}
