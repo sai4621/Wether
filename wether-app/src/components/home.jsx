@@ -12,14 +12,19 @@ const Home = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [temperatureUnit, setTemperatureUnit] = useState('C');
-    const unsplashAccessKey = '_2z0hihM8RNRCdxzqxqlOhTcjCpSKHaX98wqRsAXVT4'; // Replace with your Unsplash access key
 
     useEffect(() => {
         if (user && user.user_id) {
-            axios.get('http://localhost:5000/preferences', { params: { user_id: user.user_id } })
+            axios.get('http://localhost:5000/preferences', { 
+                params: { user_id: user.user_id },
+                withCredentials: true
+            })
                 .then(response => {
                     setTemperatureUnit(response.data.temperatureUnit);
-                    return axios.get('http://localhost:5000/cities', { params: { user_id: user.user_id } });
+                    return axios.get('http://localhost:5000/cities', { 
+                        params: { user_id: user.user_id },
+                        withCredentials: true
+                    });
                 })
                 .then(response => {
                     setCities(response.data.cities);
@@ -37,19 +42,19 @@ const Home = () => {
 
     const fetchWeatherData = (cities) => {
         const requests = cities.map(city => {
-            return axios.get('http://localhost:5000/weather', { params: { city, user_id: user.user_id } })
-                .then(response => {
-                    const temp = response.data.main.temp;
-                    return getAttireImage(temp).then(attireImage => ({
-                        city,
-                        data: {
-                            Temperature: temp,
-                            WeatherText: response.data.weather[0].description,
-                            WeatherImage: `http://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`,
-                            AttireImage: attireImage
-                        }
-                    }));
-                })
+            return axios.get('http://localhost:5000/getweather', { 
+                params: { city, user_id: user.user_id },
+                withCredentials: true
+            })
+                .then(response => ({
+                    city,
+                    data: {
+                        Temperature: response.data.Temperature, // Assume this is in Kelvin
+                        WeatherText: response.data.WeatherText,
+                        WeatherImage: response.data.WeatherImage,
+                        AttireImage: response.data.AttireImage
+                    }
+                }))
                 .catch(error => {
                     console.error(`Error fetching data for city ${city}:`, error);
                     return { city, data: undefined };
@@ -66,34 +71,12 @@ const Home = () => {
         });
     };
 
-    const getAttireImage = async (temperature) => {
-        let keyword;
-        if (temperatureUnit === 'F') {
-            if (temperature <= 32) keyword = 'winter clothing';
-            if (temperature > 32 && temperature <= 60) keyword = 'fall clothing';
-            if (temperature > 60 && temperature <= 75) keyword = 'spring clothing';
-            if (temperature > 75) keyword = 'summer clothing';
-        } else {
-            if (temperature <= 0) keyword = 'winter clothing';
-            if (temperature > 0 && temperature <= 15) keyword = 'fall clothing';
-            if (temperature > 15 && temperature <= 24) keyword = 'spring clothing';
-            if (temperature > 24) keyword = 'summer clothing';
-        }
-
-        const response = await axios.get('https://api.unsplash.com/search/photos', {
-            params: {
-                query: keyword,
-                client_id: unsplashAccessKey,
-                per_page: 1
-            }
-        });
-
-        return response.data.results[0].urls.small;
-    };
-
     const addCity = () => {
         if (newCity.trim()) {
-            axios.post('http://localhost:5000/cities', { user_id: user.user_id, city_name: newCity })
+            axios.post('http://localhost:5000/cities', { 
+                user_id: user.user_id, city_name: newCity },
+                { withCredentials: true }
+            )
                 .then(() => {
                     setCities([...cities, newCity]);
                     fetchWeatherData([...cities, newCity]);
@@ -110,7 +93,7 @@ const Home = () => {
 
     const removeCity = (cityToRemove) => {
         const encodedCityName = encodeURIComponent(cityToRemove);
-        axios.delete(`http://localhost:5000/cities/${encodedCityName}`)
+        axios.delete(`http://localhost:5000/cities/${encodedCityName}`, { withCredentials: true })
             .then(() => {
                 const updatedCities = cities.filter(city => city !== cityToRemove);
                 setCities(updatedCities);
@@ -120,6 +103,14 @@ const Home = () => {
                 console.error('Error removing city', error);
                 alert('Failed to remove city. Please check your network or contact the administrator.');
             });
+    };
+
+    const convertTemperature = (tempInKelvin) => {
+        if (temperatureUnit === 'F') {
+            return (tempInKelvin - 273.15) * 9/5 + 32;
+        } else {
+            return tempInKelvin - 273.15;
+        }
     };
 
     if (!user) {
@@ -141,7 +132,7 @@ const Home = () => {
                     <h2>{city}</h2>
                     {weatherData[city] ? (
                         <div>
-                            <p>Temperature: {weatherData[city].Temperature} °{temperatureUnit}</p>
+                            <p>Temperature: {convertTemperature(weatherData[city].Temperature).toFixed(1)} °{temperatureUnit}</p>
                             <p>Weather: {weatherData[city].WeatherText}</p>
                             {weatherData[city].WeatherImage && (
                                 <img src={weatherData[city].WeatherImage} alt={weatherData[city].WeatherText} />

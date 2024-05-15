@@ -4,8 +4,6 @@ import { useParams } from 'react-router-dom';
 import { useAuth } from './AuthContext'; // Ensure this path is correct
 import './CityData.css'; // Import the CSS file
 
-const apiKey = "3f59299cb03f1d4beb6bd960a3f546fd";
-
 const CityData = () => {
     const { cityName } = useParams();
     const { user } = useAuth();
@@ -20,24 +18,20 @@ const CityData = () => {
             try {
                 if (user && user.user_id) {
                     // Fetch user preferences
-                    const prefResponse = await axios.get('http://localhost:5000/preferences', { params: { user_id: user.user_id } });
+                    const prefResponse = await axios.get('http://localhost:5000/preferences', { 
+                        params: { user_id: user.user_id },
+                        withCredentials: true
+                    });
                     setTemperatureUnit(prefResponse.data.temperatureUnit);
 
-                    // Fetch current weather directly from OpenWeatherMap API
-                    const weatherResponse = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(cityName)}&appid=${apiKey}&units=metric`);
-                    const currentWeather = {
-                        Temperature: weatherResponse.data.main.temp,
-                        WeatherText: weatherResponse.data.weather[0].description,
-                        WeatherImage: `http://openweathermap.org/img/wn/${weatherResponse.data.weather[0].icon}@2x.png`,
-                        AttireImage: '/images/a/light_clothing.png' // Example image path
-                    };
-                    setWeatherDetails(currentWeather);
+                    // Fetch current weather and forecast data from the backend
+                    const weatherResponse = await axios.get('http://localhost:5000/getcityweather', {
+                        params: { city: cityName, user_id: user.user_id },
+                        withCredentials: true
+                    });
 
-                    // Fetch forecast data
-                    const forecastResponse = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(cityName)}&appid=${apiKey}&units=metric`);
-                    const filteredData = filterForecastData(forecastResponse.data);
-                    setForecastData(filteredData);
-
+                    setWeatherDetails(weatherResponse.data.current_weather);
+                    setForecastData(weatherResponse.data.forecast_data);
                     setLoading(false);
                 } else {
                     setLoading(false);
@@ -70,22 +64,6 @@ const CityData = () => {
         return date.toLocaleDateString(undefined, options);
     };
 
-    const filterForecastData = (data) => {
-        console.log(data)
-        return data.list.map((item) => {
-            return {
-                dt: item.dt,
-                date: item.dt_txt,
-                temperature: item.main.temp,
-                weatherIcon: item.weather[0].icon,
-                weatherDescription: item.weather[0].description,
-            };
-        });
-    };
-
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
-
     const groupForecastByDay = () => {
         const days = [];
         for (let i = 0; i < forecastData.length; i += 8) {
@@ -93,6 +71,9 @@ const CityData = () => {
         }
         return days;
     };
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
 
     const groupedForecast = groupForecastByDay();
 

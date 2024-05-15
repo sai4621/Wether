@@ -1,4 +1,4 @@
-from flask import request, jsonify, session
+from flask import Blueprint, request, jsonify, session
 from app import app, db
 from app.models import User, UserPreference, City
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -6,6 +6,10 @@ import requests
 
 OW_API_KEY = "3f59299cb03f1d4beb6bd960a3f546fd"
 
+bp = Blueprint('main', __name__)
+
+UNSPLASH_ACCESS_KEY = '_2z0hihM8RNRCdxzqxqlOhTcjCpSKHaX98wqRsAXVT4'
+OPENWEATHER_API_KEY = '3f59299cb03f1d4beb6bd960a3f546fd' 
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
@@ -129,22 +133,87 @@ def convert_temperature(temp_kelvin, unit):
         return temp_kelvin - 273.15
     return temp_kelvin
 
-@app.route('/weather', methods=['GET'])
+@bp.route('/getweather', methods=['GET'])
 def get_weather():
     city = request.args.get('city')
     user_id = request.args.get('user_id')
 
-    user_preference = UserPreference.query.filter_by(user_id=user_id).first()
-    preferred_unit = user_preference.temperatureUnit if user_preference else 'C'
+    # Fetch weather data from OpenWeather API
+    weather_response = requests.get(f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={OPENWEATHER_API_KEY}")
+    if weather_response.status_code != 200:
+        return jsonify({"error": "Failed to fetch weather data"}), 400
 
-    url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={OW_API_KEY}"
-    response = requests.get(url)
-    if response.status_code == 200:
-        weather_data = response.json()
-        temperature_kelvin = weather_data['main']['temp']
-        temperature = convert_temperature(temperature_kelvin, preferred_unit)
-        weather_data['main']['temp'] = round(temperature, 2)
-        weather_data['main']['unit'] = preferred_unit
-        return jsonify(weather_data)
+    weather_data = weather_response.json()
+    temp = weather_data['main']['temp']
+    weather_description = weather_data['weather'][0]['description']
+    weather_icon = weather_data['weather'][0]['icon']
+
+    # Determine attire based on temperature
+    if temp <= 273.15:  # 0°C
+        keyword = 'winter clothing'
+    elif temp > 273.15 and temp <= 288.15:  # 15°C
+        keyword = 'fall clothing'
+    elif temp > 288.15 and temp <= 297.15:  # 24°C
+        keyword = 'spring clothing'
     else:
-        return jsonify({"status": "fail", "message": "Error fetching weather data"}), response.status_code
+        keyword = 'summer clothing'
+
+    # Fetch attire image from Unsplash API
+    unsplash_response = requests.get(f"https://api.unsplash.com/search/photos?query={keyword}&client_id={UNSPLASH_ACCESS_KEY}&per_page=1")
+    if unsplash_response.status_code != 200:
+        return jsonify({"error": "Failed to fetch attire image"}), 400
+
+    unsplash_data = unsplash_response.json()
+    attire_image_url = unsplash_data['results'][0]['urls']['small']
+
+    # Construct response data
+    response_data = {
+        'Temperature': temp,
+        'WeatherText': weather_description,
+        'WeatherImage': f"http://openweathermap.org/img/wn/{weather_icon}@2x.png",
+        'AttireImage': attire_image_url
+    }
+
+    return jsonify(response_data)
+
+@bp.route('/getcityweather', methods=['GET'])
+def get_city_weather():
+    city = request.args.get('city')
+    user_id = request.args.get('user_id')
+
+    if not city or not user_id:
+        return jsonify({"error": "Missing city or user_id parameter"}), 400
+
+    # Fetch current weather data from OpenWeatherMap API
+    weather_response = requests.get(f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={OPENWEATHER_API_KEY}&units=metric")
+    if weather_response.status_code != 200:
+        return jsonify({"error": "Failed to fetch current weather data"}), 400
+
+    weather_data = weather_response.json()
+    current_weather = {
+        "Temperature": weather_data['main']['temp'],
+        "WeatherText": weather_data['weather'][0]['description'],
+        "WeatherImage": f"http://openweathermap.org/img/wn/{weather_data['weather'][0]['icon']}@2x.png"
+    }
+
+    # Fetch forecast data from OpenWeatherMap API
+    forecast_response = requests.get(f"http://api.openweathermap.org/data/2.5/forecast?q={city}&appid={OPENWEATHER_API_KEY}&units=metric")
+    if forecast_response.status_code != 200:
+        return jsonify({"error": "Failed to fetch forecast data"}), 400
+
+    forecast_data = forecast_response.json()
+    forecast_list = [
+        {
+            "dt": item['dt'],
+            "date": item['dt_txt'],
+            "temperature": item['main']['temp'],
+            "weatherIcon": item['weather'][0]['icon'],
+            "weatherDescription": item['weather'][0]['description']
+        }
+        for item in forecast_data['list']
+    ]
+
+    return jsonify({
+        "current_weather": current_weather,
+        "forecast_data": forecast_list
+    })
