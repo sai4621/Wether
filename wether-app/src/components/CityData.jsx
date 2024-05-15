@@ -71,6 +71,7 @@ const CityData = () => {
     };
 
     const filterForecastData = (data) => {
+        console.log(data)
         return data.list.map((item) => {
             return {
                 dt: item.dt,
